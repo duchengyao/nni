@@ -396,9 +396,9 @@ class CreamSupernetTrainer(Trainer):
                 self.mutator.reset()
                 logits = self.model(x)
                 loss = self.val_loss(logits, y)
-                prec1, prec5 = self.accuracy(logits, y, topk=(1, 5))
+                prec1, prec5 = accuracy(logits, y, topk=(1, 5))
                 metrics = {"prec1": prec1, "prec5": prec5, "loss": loss}
-                metrics = self.reduce_metrics(metrics, self.distributed)
+                metrics = reduce_metrics(metrics)
                 meters.update(metrics)
 
                 if self.log_frequency is not None and step % self.log_frequency == 0:
