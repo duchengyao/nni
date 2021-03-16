@@ -38,13 +38,34 @@ if __name__ == '__main__':
                                                 trainer_kwargs={"max_epochs": 1})
 
     simple_startegy = RandomStrategy()
+    
+    # 1. ------------------------------------
+    
+    trainer.fit(NET) 
+    # see https://github.com/microsoft/nni/blame/master/docs/en_US/NAS/retiarii/Tutorial.rst#L177
+    # TypeError: __init__() missing 1 required positional argument: 'hidden_size'
+    
+    # 2. ------------------------------------
+    
+    trainer.fit(base_model)
+    # RuntimeError: mat1 and mat2 shapes cannot be multiplied (100x800 and 128x10)
+    
+    # 3. ------------------------------------
+    
+    base_model = Net(800)
+    trainer.fit(base_model)
+    # Is able to run, but LayerChoice is useless. 
+    # I just want to run this script in only command line mode.
 
-    exp = RetiariiExperiment(base_model, trainer, [], simple_startegy)
-
-    exp_config = RetiariiExeConfig('local')
-    exp_config.experiment_name = 'mnist_search'
-    exp_config.trial_concurrency = 2
-    exp_config.max_trial_number = 10
-    exp_config.training_service.use_active_gpu = False
-
-    exp.run(exp_config, 8081 + random.randint(0, 100))
+    
+    
+    # ==================================================================================================
+    # exp = RetiariiExperiment(base_model, trainer, [], simple_startegy)
+    # 
+    # exp_config = RetiariiExeConfig('local')
+    # exp_config.experiment_name = 'mnist_search'
+    # exp_config.trial_concurrency = 2
+    # exp_config.max_trial_number = 10
+    # exp_config.training_service.use_active_gpu = False
+    # 
+    # exp.run(exp_config, 8081 + random.randint(0, 100))
